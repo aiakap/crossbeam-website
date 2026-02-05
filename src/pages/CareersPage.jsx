@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import crossbeamLogo from '../assets/crossbeam-logo.png';
@@ -57,6 +57,10 @@ Job posting: https://website1-steel-seven.vercel.app/careers`
 };
 
 const CareersPage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="font-sans text-gray-900 bg-white min-h-screen">
       {/* Navigation */}
