@@ -42,7 +42,7 @@ const positions = [
 ];
 
 const generateMailtoLink = (position) => {
-  const email = 'alex@shiftcapital.com';
+  const email = 'alex@crossbeam.agency';
   const subject = encodeURIComponent(`Application: ${position}`);
   const body = encodeURIComponent(
 `Hi,
@@ -172,7 +172,11 @@ const CareersPage = () => {
             </p>
           </div>
           <div className="flex gap-8 text-xs text-gray-500 font-bold uppercase tracking-widest">
-            <Link to="/" className="hover:text-black">Home</Link>
+            <Link to="/#about" className="hover:text-black">Philosophy</Link>
+            <Link to="/#services" className="hover:text-black">Services</Link>
+            <Link to="/#how-we-work" className="hover:text-black">Engagement</Link>
+            <Link to="/#experience" className="hover:text-black">Experience</Link>
+            <Link to="/careers" className="hover:text-black">Careers</Link>
             <Link to="/#contact" className="hover:text-black">Contact</Link>
           </div>
         </div>

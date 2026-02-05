@@ -642,8 +642,11 @@ const Footer = ({ scrollToSection }) => {
         </div>
 
         <div className="flex gap-8 text-xs text-gray-500 font-bold uppercase tracking-widest">
-          <button onClick={() => scrollToSection('home')} className="hover:text-black">Home</button>
           <button onClick={() => scrollToSection('about')} className="hover:text-black">Philosophy</button>
+          <button onClick={() => scrollToSection('services')} className="hover:text-black">Services</button>
+          <button onClick={() => scrollToSection('how-we-work')} className="hover:text-black">Engagement</button>
+          <button onClick={() => scrollToSection('experience')} className="hover:text-black">Experience</button>
+          <button onClick={() => scrollToSection('careers')} className="hover:text-black">Careers</button>
           <button onClick={() => scrollToSection('contact')} className="hover:text-black">Contact</button>
         </div>
       </div>
