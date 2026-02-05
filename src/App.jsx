@@ -14,7 +14,10 @@ import {
   Smartphone,
   ShoppingCart,
   Compass,
-  Code
+  Code,
+  CheckCircle,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import crossbeamLogo from './assets/crossbeam-logo.png';
 
@@ -443,9 +446,55 @@ const Careers = () => {
 };
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    organization: '',
+    message: ''
+  });
+  const [status, setStatus] = useState('idle'); // idle | submitting | success | error
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('submitting');
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: 'bfce975f-1bba-4494-a649-2ed33b31f386',
+          subject: `New inquiry from ${formData.name}`,
+          from_name: formData.name,
+          ...formData
+        })
+      });
+
+      if (response.ok) {
+        setStatus('success');
+        setFormData({ name: '', email: '', organization: '', message: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch (error) {
+      setStatus('error');
+    }
+  };
+
+  const resetForm = () => {
+    setStatus('idle');
+  };
+
+  const isSubmitting = status === 'submitting';
+
   return (
     <section id="contact" className="relative py-24 md:py-32 bg-white overflow-hidden">
-       {/* Subtle Background Image - Minimal Lines */}
+      {/* Subtle Background Image - Minimal Lines */}
       <div className="absolute inset-0 opacity-[0.03] z-0 pointer-events-none">
         <img
           src="https://images.unsplash.com/photo-1488972685288-c3cc15799269?q=80&w=2670&auto=format&fit=crop"
@@ -461,34 +510,121 @@ const Contact = () => {
           </p>
         </div>
 
-        <form className="space-y-8 max-w-2xl mx-auto bg-white/50 backdrop-blur-sm p-8 rounded-lg border border-gray-100">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Name</label>
-              <input type="text" className="w-full bg-transparent border-b border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors" placeholder="Jane Doe" />
+        {/* Success State */}
+        {status === 'success' && (
+          <div className="max-w-2xl mx-auto bg-white/50 backdrop-blur-sm p-12 rounded-lg border border-gray-100 text-center animate-fade-in">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-50 rounded-full mb-8">
+              <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Email</label>
-              <input type="email" className="w-full bg-transparent border-b border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors" placeholder="jane@company.com" />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Organization</label>
-            <input type="text" className="w-full bg-transparent border-b border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors" placeholder="Company Ltd." />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Project Context</label>
-            <textarea rows="4" className="w-full bg-transparent border-b border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors resize-none" placeholder="Tell us what you're trying to solve..."></textarea>
-          </div>
-
-          <div className="pt-8 text-center">
-            <button type="submit" className="px-12 py-5 bg-black text-white font-bold tracking-widest text-xs uppercase hover:bg-gray-800 transition-all">
-              Initiate Conversation
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Message received.</h3>
+            <p className="text-lg text-gray-500 font-light mb-8">
+              Thank you for reaching out. We'll be in touch within 24 hours.
+            </p>
+            <button
+              onClick={resetForm}
+              className="text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-black transition-colors border-b border-gray-300 pb-1"
+            >
+              Send another message
             </button>
           </div>
-        </form>
+        )}
+
+        {/* Error State */}
+        {status === 'error' && (
+          <div className="max-w-2xl mx-auto bg-white/50 backdrop-blur-sm p-12 rounded-lg border border-red-100 text-center animate-fade-in">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-red-50 rounded-full mb-8">
+              <AlertCircle className="w-10 h-10 text-red-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong.</h3>
+            <p className="text-lg text-gray-500 font-light mb-8">
+              We couldn't send your message. Please try again or email us directly.
+            </p>
+            <button
+              onClick={resetForm}
+              className="px-12 py-5 bg-black text-white font-bold tracking-widest text-xs uppercase hover:bg-gray-800 transition-all"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {/* Form State (idle or submitting) */}
+        {(status === 'idle' || status === 'submitting') && (
+          <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto bg-white/50 backdrop-blur-sm p-8 rounded-lg border border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  disabled={isSubmitting}
+                  className="w-full bg-transparent border-b border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder="Jane Doe"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  disabled={isSubmitting}
+                  className="w-full bg-transparent border-b border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder="jane@company.com"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Organization</label>
+              <input
+                type="text"
+                name="organization"
+                value={formData.organization}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                className="w-full bg-transparent border-b border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                placeholder="Company Ltd."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Project Context</label>
+              <textarea
+                rows="4"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                disabled={isSubmitting}
+                className="w-full bg-transparent border-b border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+                placeholder="Tell us what you're trying to solve..."
+              ></textarea>
+            </div>
+
+            <div className="pt-8 text-center">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="px-12 py-5 bg-black text-white font-bold tracking-widest text-xs uppercase hover:bg-gray-800 transition-all disabled:opacity-70 disabled:cursor-not-allowed inline-flex items-center justify-center gap-3 min-w-[240px]"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  'Initiate Conversation'
+                )}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </section>
   );
