@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import {
   ArrowRight,
   Menu,
@@ -20,6 +21,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import crossbeamLogo from './assets/crossbeam-logo.png';
+import CareersPage from './pages/CareersPage';
 
 /* CROSSBEAM - Agency Website
    Tone: Quiet Authority, Elegant Minimalism
@@ -433,12 +435,12 @@ const Careers = () => {
             </div>
           </div>
 
-          <a href="mailto:careers@crossbeam.agency" className="group flex items-center gap-4 text-black hover:text-gray-600 transition-colors">
+          <Link to="/careers" className="group flex items-center gap-4 text-black hover:text-gray-600 transition-colors">
             <div className="w-16 h-16 rounded-full border border-black flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all">
               <Briefcase className="w-6 h-6" />
             </div>
             <span className="text-lg font-medium">View Open Roles</span>
-          </a>
+          </Link>
         </div>
       </div>
     </section>
@@ -643,18 +645,15 @@ const Footer = ({ scrollToSection }) => {
           <button onClick={() => scrollToSection('home')} className="hover:text-black">Home</button>
           <button onClick={() => scrollToSection('about')} className="hover:text-black">Philosophy</button>
           <button onClick={() => scrollToSection('contact')} className="hover:text-black">Contact</button>
-          <span className="text-gray-300">|</span>
-          <a href="#" className="hover:text-black">LinkedIn</a>
-          <a href="#" className="hover:text-black">Twitter</a>
         </div>
       </div>
     </footer>
   );
 };
 
-// --- Main App ---
+// --- Main Site Component ---
 
-const App = () => {
+const MainSite = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -713,6 +712,17 @@ const App = () => {
 
       <Footer scrollToSection={scrollToSection} />
     </div>
+  );
+};
+
+// --- Main App with Routing ---
+
+const App = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<MainSite />} />
+      <Route path="/careers" element={<CareersPage />} />
+    </Routes>
   );
 };
 
